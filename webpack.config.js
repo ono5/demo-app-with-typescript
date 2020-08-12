@@ -2,6 +2,7 @@
 const path = require('path');
 
 module.exports = {
+    mode: 'development',
     // プロジェクト全体のエントリポイント(アプリケーションが最初に起動するところ)
     entry: './src/app.ts',
     output: {
