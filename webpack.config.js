@@ -8,6 +8,7 @@ module.exports = {
         // webpackがバンドルする名前を指定する
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'), // tsconfig.jsonのoutDir設定と同じ場所を指定する 絶対パスを指定する必要がある __dirnameはファイルが設置されているフォルダの絶対パスを取得する
+        publicPath: 'dist'
     },
     devtool: 'inline-source-map', // ソースマップの生成
     // javascriptのオブジェクトを取得
