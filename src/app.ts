@@ -1,3 +1,22 @@
+// autobind decorator
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+    // オリジナルのメソッドを取得
+    const originalMethod = descriptor.value
+    // 設定を変更後のディスクリプタを作成
+    const adjDescriptor: PropertyDescriptor = {
+        // プロパティを変更できるようにする
+        configurable: true,
+        // オリジナルの関数にアクセスしようとした時に、実行される
+        get() {
+            const boundFn = originalMethod.bind(this)
+            return boundFn
+        }
+    }
+    return adjDescriptor
+}
+
+
+// Project Input Class
 class ProjectInput {
     templateElement: HTMLTemplateElement
     hostElement: HTMLDivElement
@@ -27,6 +46,7 @@ class ProjectInput {
         this.attach()
     }
 
+    @autobind
     private submitHandler(event: Event) {
         event.preventDefault()
         console.log(this.titleInputElement.value)
@@ -36,7 +56,7 @@ class ProjectInput {
 
     // EventListnerの登録を行う
     private configure() {
-        this.element.addEventListener('submit', this.submitHandler.bind(this))
+        this.element.addEventListener('submit', this.submitHandler)
     }
 
     //　要素を追加する
