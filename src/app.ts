@@ -46,12 +46,34 @@ class ProjectInput {
         this.attach()
     }
 
+    // ユーザーの入力値を全て取得する
+    private gatherUserInput(): [string, string, number] | void {
+        const enteredTitle = this.titleInputElement.value
+        const enteredDescription = this.descriptionInputElement.value
+        const enteredManday = this.mandayInputElement.value
+
+        // バリデーション
+        if (enteredTitle.trim().length === 0 ||
+            enteredDescription.trim().length === 0 ||
+            enteredManday.trim().length === 0
+            ) {
+                alert('Invalid input value, Try it again!')
+                return
+            } else {
+                // +をつけるとstring->numberになる
+                return [enteredTitle, enteredDescription, +enteredManday]
+            }
+    }
+
     @autobind
     private submitHandler(event: Event) {
         event.preventDefault()
-        console.log(this.titleInputElement.value)
-        console.log(this.descriptionInputElement.value)
-        console.log(this.mandayInputElement.value)
+        const userInput = this.gatherUserInput()
+        // Tupleはarrayでもある
+        if (Array.isArray(userInput)) {
+            const [title, desc, manday] = userInput
+            console.log({title}, {desc}, {manday})
+        }
     }
 
     // EventListnerの登録を行う
