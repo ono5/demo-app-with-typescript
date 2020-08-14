@@ -1,3 +1,45 @@
+// Validation
+// ここではバリデートする型を定義する
+// required以下はオプションにするため?をつけている
+interface Validatable {
+    value: string | number
+    required?: boolean
+    minLength?: number
+    maxLength?: number
+    min?: number
+    max?: number
+}
+
+function validate(validatableInput: Validatable) {
+    let isValid = true
+    // check require
+    if (validatableInput.required) {
+        isValid = isValid && validatableInput.value.toString().trim().length !== 0
+    }
+    // check minLength
+    // 文字列の場合のみチェックする
+    // minLengthに0が設定されていてもnullチェックで弾ける
+    if (validatableInput.minLength != null && validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length >= validatableInput.minLength
+    }
+
+    // check maxLength
+    if (validatableInput.maxLength != null && validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length <= validatableInput.maxLength
+    }
+
+    // check min
+    if (validatableInput.min != null && validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value.length >= validatableInput.min
+    }
+
+    // check max
+    if (validatableInput.max != null && validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value.length <= validatableInput.max
+    }
+    return isValid
+}
+
 // autobind decorator
 function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
     // オリジナルのメソッドを取得
@@ -14,7 +56,6 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
     }
     return adjDescriptor
 }
-
 
 // Project Input Class
 class ProjectInput {
@@ -53,9 +94,28 @@ class ProjectInput {
         const enteredManday = this.mandayInputElement.value
 
         // バリデーション
-        if (enteredTitle.trim().length === 0 ||
-            enteredDescription.trim().length === 0 ||
-            enteredManday.trim().length === 0
+        const titleValidatable: Validatable = {
+            value: enteredTitle,
+            required: true
+        }
+
+        const descriptionValidatable: Validatable = {
+            value: enteredDescription,
+            required: true,
+            minLength: 5
+        }
+
+        const mandayValidatable: Validatable = {
+            value: +enteredManday,
+            required: true,
+            min: 1,
+            max: 1000
+        }
+
+        if (
+            !validate(titleValidatable) ||
+            !validate(descriptionValidatable) ||
+            !validate(mandayValidatable)
             ) {
                 alert('Invalid input value, Try it again!')
                 return
