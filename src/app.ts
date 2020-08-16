@@ -73,6 +73,13 @@ class ProjectList {
         this.element = importedNode.firstElementChild as HTMLElement;
         // リストは、active / finishの2種類のリストが存在する
         this.element.id = `${this.type}-projects`
+
+        this.attach()
+    }
+
+    private attach() {
+        // beforeend -> 終了タグの前に設置
+        this.hostElement.insertAdjacentElement('beforeend', this.element)
     }
 }
 
