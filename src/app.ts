@@ -57,7 +57,27 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
     return adjDescriptor
 }
 
+// ProjectList Class
+// プロジェクトのリストを表示する
+class ProjectList {
+    templateElement: HTMLTemplateElement
+    hostElement: HTMLDivElement
+    element: HTMLElement
+
+    // typeというプロパティをクラスに定義
+    constructor(private type: 'active' | 'finished') {
+        this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement
+        this.hostElement = <HTMLDivElement>document.getElementById('app')!
+
+        const importedNode = document.importNode(this.templateElement.content, true)
+        this.element = importedNode.firstElementChild as HTMLElement;
+        // リストは、active / finishの2種類のリストが存在する
+        this.element.id = `${this.type}-projects`
+    }
+}
+
 // Project Input Class
+// フォームの表示と入力値を取得
 class ProjectInput {
     templateElement: HTMLTemplateElement
     hostElement: HTMLDivElement
