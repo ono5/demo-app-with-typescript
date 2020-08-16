@@ -1,3 +1,19 @@
+// Project State Management
+class ProjectState {
+    private projects: any = []
+
+    // プロジェクトを追加
+    addProject(title: string, description: string, manday: number) {
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            description: description,
+            manday: manday
+        }
+        this.projects.push(newProject)
+    }
+}
+
 // Validation
 // ここではバリデートする型を定義する
 // required以下はオプションにするため?をつけている
