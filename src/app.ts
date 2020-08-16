@@ -1,6 +1,8 @@
 // Project State Management
 // シングルトン適用
 class ProjectState {
+    // イベントリスナーのリスト
+    private listeners: any[] = []
     private projects: any = []
     private static instance: ProjectState
 
@@ -15,6 +17,11 @@ class ProjectState {
         return this.instance
     }
 
+    // イベントリスナー関数を登録
+    addListener(listenerFn: Function) {
+        this.listeners.push(listenerFn)
+    }
+
     // プロジェクトを追加
     addProject(title: string, description: string, manday: number) {
         const newProject = {
@@ -24,6 +31,11 @@ class ProjectState {
             manday: manday
         }
         this.projects.push(newProject)
+        for (const listenerFn of this.listeners) {
+            // プロジェクトのリストを管理するためなので、引数にはプロジェクトのリストを渡す
+            // ただし、コピーを渡すべきなので、sliceメソッドでコピーをする
+            listenerFn(this.projects.slice())
+        }
     }
 }
 
@@ -95,19 +107,41 @@ class ProjectList {
     templateElement: HTMLTemplateElement
     hostElement: HTMLDivElement
     element: HTMLElement
+    // プロジェクトの配列を保存するためのプロパティ
+    assignedProjects: any[]
 
     // typeというプロパティをクラスに定義
     constructor(private type: 'active' | 'finished') {
         this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement
         this.hostElement = <HTMLDivElement>document.getElementById('app')!
+        this.assignedProjects = []
 
         const importedNode = document.importNode(this.templateElement.content, true)
         this.element = importedNode.firstElementChild as HTMLElement;
         // リストは、active / finishの2種類のリストが存在する
         this.element.id = `${this.type}-projects`
 
+        // リストに変更があった時発動したいイベントを登録
+        // 新しいリストを表示したい
+        projectState.addListener((projects: any[]) => {
+            // projectsは何らかの変更が行われたリスト
+            this.assignedProjects = projects
+            this.renderProjects()
+        })
+
         this.attach()
         this.renderContent()
+    }
+
+
+    private renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
+        for (const prjItem of this.assignedProjects) {
+            // リストの項目を追加する
+            const listItem = document.createElement('li')
+            listItem.textContent = prjItem.title
+            listEl?.appendChild(listItem)
+        }
     }
 
     private renderContent() {
