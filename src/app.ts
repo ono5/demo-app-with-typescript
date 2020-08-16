@@ -1,6 +1,19 @@
 // Project State Management
+// シングルトン適用
 class ProjectState {
     private projects: any = []
+    private static instance: ProjectState
+
+    private constructor() {}
+
+    // アプリケーションでこのインスタンスは常に一つ
+    static getInstance() {
+        if (this.instance) {
+            return this.instance
+        }
+        this.instance = new ProjectState()
+        return this.instance
+    }
 
     // プロジェクトを追加
     addProject(title: string, description: string, manday: number) {
@@ -13,6 +26,9 @@ class ProjectState {
         this.projects.push(newProject)
     }
 }
+
+// 状態管理をするオブジェクトはアプリケーション内で必ず一つだけ(シングルトンパターンを適用)
+const projectState = ProjectState.getInstance()
 
 // Validation
 // ここではバリデートする型を定義する
@@ -190,7 +206,8 @@ class ProjectInput {
         // Tupleはarrayでもある
         if (Array.isArray(userInput)) {
             const [title, desc, manday] = userInput
-            console.log({title}, {desc}, {manday})
+            // グローバル変数であるため、クラスの内部から別のクラスのメソッドを呼び出せる
+            projectState.addProject(title, desc, manday)
             this.clearInputs()
         }
     }
