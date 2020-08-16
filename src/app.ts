@@ -75,6 +75,15 @@ class ProjectList {
         this.element.id = `${this.type}-projects`
 
         this.attach()
+        this.renderContent()
+    }
+
+    private renderContent() {
+        const listId = `${this.type}-projects-list`
+        // ulにidを追加する
+        this.element.querySelector('ul')!.id = listId
+        // h2にメッセージを追加する
+        this.element.querySelector('h2')!.textContent = this.type === 'active' ? '実行中プロジェクト' : '完了プロジェクト'
     }
 
     private attach() {
@@ -183,3 +192,5 @@ class ProjectInput {
 }
 
 const prjInput = new ProjectInput()
+const activePrjList = new ProjectList('active')
+const finishedPrjList = new ProjectList('finished')
