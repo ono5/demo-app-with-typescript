@@ -16,11 +16,15 @@ class Project {
         ) {}
 }
 
+// リスナー型を定義
+// 関数を定義
+type Listener = (items: Project[]) => void
+
 // Project State Management
 // シングルトン適用
 class ProjectState {
     // イベントリスナーのリスト
-    private listeners: any[] = []
+    private listeners: Listener[] = []
     private projects: Project[] = []
     private static instance: ProjectState
 
@@ -36,7 +40,7 @@ class ProjectState {
     }
 
     // イベントリスナー関数を登録
-    addListener(listenerFn: Function) {
+    addListener(listenerFn: Listener) {
         this.listeners.push(listenerFn)
     }
 
@@ -151,7 +155,7 @@ class ProjectList {
 
         // リストに変更があった時発動したいイベントを登録
         // 新しいリストを表示したい
-        projectState.addListener((projects: any[]) => {
+        projectState.addListener((projects: Project[]) => {
             // projectsは何らかの変更が行われたリスト
             this.assignedProjects = projects
             this.renderProjects()
