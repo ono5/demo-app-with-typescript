@@ -156,15 +156,22 @@ class ProjectList {
         // リストに変更があった時発動したいイベントを登録
         // 新しいリストを表示したい
         projectState.addListener((projects: Project[]) => {
+            // フィルタリングを行う
+            const relevantProjects = projects.filter(prj => {
+                // typeはインスタンス化した時に決定される
+                if (this.type === 'active') {
+                    return prj.status === ProjectStatus.Active
+                }
+                return prj.status === ProjectStatus.Finished
+            })
             // projectsは何らかの変更が行われたリスト
-            this.assignedProjects = projects
+            this.assignedProjects = relevantProjects
             this.renderProjects()
         })
 
         this.attach()
         this.renderContent()
     }
-
 
     private renderProjects() {
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
