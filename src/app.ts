@@ -174,7 +174,11 @@ class ProjectList {
     }
 
     private renderProjects() {
-        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
+        const listEl = document.getElementById(
+            `${this.type}-projects-list`)! as HTMLUListElement
+        // リストを一旦からにしてから、要素を加える
+        // そうでないとデータが重複して表示される
+        listEl.innerHTML = ''
         for (const prjItem of this.assignedProjects) {
             // リストの項目を追加する
             const listItem = document.createElement('li')
