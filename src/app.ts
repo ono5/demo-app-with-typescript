@@ -1,9 +1,27 @@
+// Project Type
+// any型を定義するのはよくない -> 自分で定義
+// リテラル型などは自分でプロパティ名を覚える必要がある -> これもよくない
+// このような場合は、自分で型を定義した方が良い
+enum ProjectStatus {
+    Active, Finished
+}
+// クラスだがプロジェクトの型のようなもの
+class Project {
+    constructor(
+        public id: string,
+        public title: string,
+        public description: string,
+        public mandy: number,
+        public status: ProjectStatus
+        ) {}
+}
+
 // Project State Management
 // シングルトン適用
 class ProjectState {
     // イベントリスナーのリスト
     private listeners: any[] = []
-    private projects: any = []
+    private projects: Project[] = []
     private static instance: ProjectState
 
     private constructor() {}
@@ -24,12 +42,22 @@ class ProjectState {
 
     // プロジェクトを追加
     addProject(title: string, description: string, manday: number) {
-        const newProject = {
-            id: Math.random().toString(),
-            title: title,
-            description: description,
-            manday: manday
-        }
+        // このやり方だとプロパティ名を自分で覚えておかないといけない
+        // const newProject = {
+        //     id: Math.random().toString(),
+        //     title: title,
+        //     description: description,
+        //     manday: manday
+        // }
+
+        // クラス型を定義すれば、インスタンス化するだけ
+        const newProject = new Project(
+            Math.random().toString(),
+            title,
+            description,
+            manday,
+            ProjectStatus.Active
+        )
         this.projects.push(newProject)
         for (const listenerFn of this.listeners) {
             // プロジェクトのリストを管理するためなので、引数にはプロジェクトのリストを渡す
@@ -108,7 +136,7 @@ class ProjectList {
     hostElement: HTMLDivElement
     element: HTMLElement
     // プロジェクトの配列を保存するためのプロパティ
-    assignedProjects: any[]
+    assignedProjects: Project[]
 
     // typeというプロパティをクラスに定義
     constructor(private type: 'active' | 'finished') {
