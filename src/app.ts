@@ -18,17 +18,26 @@ class Project {
 
 // リスナー型を定義
 // 関数を定義
-type Listener = (items: Project[]) => void
+type Listener<T> = (items: T[]) => void
+
+class State<T> {
+    protected listeners: Listener<T>[] = []
+
+    // イベントリスナー関数を登録
+    addListener(listenerFn: Listener<T>) {
+        this.listeners.push(listenerFn)
+    }
+}
 
 // Project State Management
 // シングルトン適用
-class ProjectState {
-    // イベントリスナーのリスト
-    private listeners: Listener[] = []
+class ProjectState extends State<Project> {
     private projects: Project[] = []
     private static instance: ProjectState
 
-    private constructor() {}
+    private constructor() {
+        super()
+    }
 
     // アプリケーションでこのインスタンスは常に一つ
     static getInstance() {
@@ -39,10 +48,6 @@ class ProjectState {
         return this.instance
     }
 
-    // イベントリスナー関数を登録
-    addListener(listenerFn: Listener) {
-        this.listeners.push(listenerFn)
-    }
 
     // プロジェクトを追加
     addProject(title: string, description: string, manday: number) {
