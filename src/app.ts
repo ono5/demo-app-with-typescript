@@ -167,24 +167,20 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
 // ProjectList Class
 // プロジェクトのリストを表示する
-class ProjectList {
-    templateElement: HTMLTemplateElement
-    hostElement: HTMLDivElement
-    element: HTMLElement
+class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     // プロジェクトの配列を保存するためのプロパティ
     assignedProjects: Project[]
 
     // typeというプロパティをクラスに定義
     constructor(private type: 'active' | 'finished') {
-        this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement
-        this.hostElement = <HTMLDivElement>document.getElementById('app')!
+        super('project-list', 'app', false,`${type}-projects`)
         this.assignedProjects = []
 
-        const importedNode = document.importNode(this.templateElement.content, true)
-        this.element = importedNode.firstElementChild as HTMLElement;
-        // リストは、active / finishの2種類のリストが存在する
-        this.element.id = `${this.type}-projects`
+        this.configure()
+        this.renderContent()
+    }
 
+    configure() {
         // リストに変更があった時発動したいイベントを登録
         // 新しいリストを表示したい
         projectState.addListener((projects: Project[]) => {
@@ -200,9 +196,14 @@ class ProjectList {
             this.assignedProjects = relevantProjects
             this.renderProjects()
         })
+    }
 
-        this.attach()
-        this.renderContent()
+    renderContent() {
+        const listId = `${this.type}-projects-list`
+        // ulにidを追加する
+        this.element.querySelector('ul')!.id = listId
+        // h2にメッセージを追加する
+        this.element.querySelector('h2')!.textContent = this.type === 'active' ? '実行中プロジェクト' : '完了プロジェクト'
     }
 
     private renderProjects() {
@@ -217,19 +218,6 @@ class ProjectList {
             listItem.textContent = prjItem.title
             listEl?.appendChild(listItem)
         }
-    }
-
-    private renderContent() {
-        const listId = `${this.type}-projects-list`
-        // ulにidを追加する
-        this.element.querySelector('ul')!.id = listId
-        // h2にメッセージを追加する
-        this.element.querySelector('h2')!.textContent = this.type === 'active' ? '実行中プロジェクト' : '完了プロジェクト'
-    }
-
-    private attach() {
-        // beforeend -> 終了タグの前に設置
-        this.hostElement.insertAdjacentElement('beforeend', this.element)
     }
 }
 
