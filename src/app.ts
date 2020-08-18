@@ -223,34 +223,27 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
 
 // Project Input Class
 // フォームの表示と入力値を取得
-class ProjectInput {
-    templateElement: HTMLTemplateElement
-    hostElement: HTMLDivElement
-    element: HTMLFormElement
+class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
     titleInputElement: HTMLInputElement
     descriptionInputElement: HTMLInputElement
     mandayInputElement: HTMLInputElement
 
     constructor() {
-        // template要素への参照
-        // getElementByIdの戻り値が不明であるため、型キャストが必要
-        this.templateElement = document.getElementById('project-input')! as HTMLTemplateElement
-        // templateを表示する親要素への参照
-        this.hostElement = <HTMLDivElement>document.getElementById('app')!
-
-        // form以下をインポート
-        const importedNode = document.importNode(this.templateElement.content, true)
-        // Domに追加したい具体的にHTML要素を取得する
-        this.element = importedNode.firstElementChild as HTMLFormElement;
-        this.element.id = 'user-input'
+        super('project-input', 'app', true, 'user-input')
 
         this.titleInputElement = this.element.querySelector('#title') as HTMLInputElement
         this.descriptionInputElement = this.element.querySelector('#description') as HTMLInputElement
         this.mandayInputElement = this.element.querySelector('#manday') as HTMLInputElement
 
         this.configure()
-        this.attach()
     }
+
+    // EventListnerの登録を行う
+    configure() {
+        this.element.addEventListener('submit', this.submitHandler)
+    }
+
+    renderContent() {}
 
     // ユーザーの入力値を全て取得する
     private gatherUserInput(): [string, string, number] | void {
@@ -309,16 +302,6 @@ class ProjectInput {
         }
     }
 
-    // EventListnerの登録を行う
-    private configure() {
-        this.element.addEventListener('submit', this.submitHandler)
-    }
-
-    //　要素を追加する
-    private attach() {
-        // <div id="app">直後にインポートしたHTMLを追加する
-        this.hostElement.insertAdjacentElement('afterbegin', this.element)
-    }
 }
 
 const prjInput = new ProjectInput()
