@@ -231,7 +231,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 
 // ProjectList Class
 // プロジェクトのリストを表示する
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget{
     // プロジェクトの配列を保存するためのプロパティ
     assignedProjects: Project[]
 
@@ -244,7 +244,24 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
         this.renderContent()
     }
 
+    @autobind
+    dragOverHandler(_: DragEvent) {
+        const listEl = this.element.querySelector('ul')!
+        listEl.classList.add('droppable')
+    }
+
+    dropHandler(_: DragEvent) {
+
+    }
+
+    dragLeaveHandler(_: DragEvent) {
+
+    }
+
     configure() {
+        this.element.addEventListener('dragover', this.dragOverHandler)
+        this.element.addEventListener('drop', this.dropHandler)
+        this.element.addEventListener('dragleave', this.dragLeaveHandler)
         // リストに変更があった時発動したいイベントを登録
         // 新しいリストを表示したい
         projectState.addListener((projects: Project[]) => {
