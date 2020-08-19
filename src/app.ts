@@ -209,7 +209,10 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
     // Drag処理をどこに書けばいいのかわかりやすくなる
     @autobind
     dragStartHandler(event: DragEvent) {
-        console.log(event)
+        // Dragした時データを転送するためのプロパティ
+        event.dataTransfer!.setData('text/plain', this.project.id)
+        // ブラウザ上でのカーソル表示設定
+        event.dataTransfer!.effectAllowed = 'move';
     }
 
     dragEndHandler(_: DragEvent) {
@@ -245,13 +248,19 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
     }
 
     @autobind
-    dragOverHandler(_: DragEvent) {
-        const listEl = this.element.querySelector('ul')!
-        listEl.classList.add('droppable')
+    dragOverHandler(event: DragEvent) {
+        // ProjectItemのdragStartHandlerから転送されてくる
+        if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+            // javascriptは基本的にはdragイベントを許可していないので、設定解除
+            // これによりdropHandlerを呼ぶことが可能
+            event.preventDefault();
+            const listEl = this.element.querySelector('ul')!;
+            listEl.classList.add('droppable');
+        }
     }
 
     dropHandler(_: DragEvent) {
-
+        console.log(event)
     }
 
     @autobind
