@@ -82,6 +82,21 @@ class ProjectState extends State<Project> {
             ProjectStatus.Active
         )
         this.projects.push(newProject)
+        this.updateListeners();
+    }
+
+    // プロジェクトのステータスを変更する
+    moveProject(projectId: string, newStatus: ProjectStatus) {
+        const project = this.projects.find(prj => prj.id === projectId);
+        // ステータスが本当に変わる場合だけ実行
+        // これを入れないとドラッグしていない場合も機能してしまう
+        if (project && project.status !== newStatus) {
+            project.status = newStatus;
+            this.updateListeners();
+        }
+    }
+
+    private updateListeners() {
         for (const listenerFn of this.listeners) {
             // プロジェクトのリストを管理するためなので、引数にはプロジェクトのリストを渡す
             // ただし、コピーを渡すべきなので、sliceメソッドでコピーをする
@@ -259,8 +274,13 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
         }
     }
 
-    dropHandler(_: DragEvent) {
-        console.log(event)
+    @autobind
+    dropHandler(event: DragEvent) {
+        // console.log(event.dataTransfer!.getData('text/plain'))
+        // dragStartHandlerからidが渡される
+        const prjId = event.dataTransfer!.getData('text/plain');
+        projectState.moveProject(
+            prjId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished)
     }
 
     @autobind
