@@ -1,0 +1,19 @@
+/* reset css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Latoは、Google Fonts */
+    /* <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet"> */
+    font-family: "Lato", sans-serif;
+    font-weight: 400; /* フォントの太さ */
+    font-size: 16px; /* フォントの大きさ */
+    line-height: 1.7; /* 行の高さ */
+    color: #777; /* 文字の色 */
+    padding: 30px;
+}
+
+/* end of reset css */
